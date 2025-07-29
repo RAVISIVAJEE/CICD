@@ -8,7 +8,7 @@ pipeline {
     }
 
     environment {
-        SONAR_PROJECT_KEY = 'my-vite-app' // Change if your SonarQube project key is different
+        SONAR_PROJECT_KEY = 'My-Vite-Application' // Change if your SonarQube project key is different
         SONAR_AUTH_TOKEN_ID = 'sonarqube-token' // Make sure this matches your Jenkins credentials ID for SonarQube token
         S3_BUCKET_NAME = 'my-vite-app-cicd-demo-2025' // Replace with your actual S3 bucket name
         AWS_REGION = 'us-east-1' // Replace with your AWS region
@@ -58,20 +58,24 @@ pipeline {
             steps {
                 script {
                     echo 'Running SonarQube analysis...'
-                    withSonarQubeEnv(credentialsId: "squ_b48c122d744a4a4114b6586799b53073f1a6d100", sonarQubeUrl: "http://98.81.209.53:9000/") {
+                    // Use the SonarQube Scanner plugin
+                    // The 'sonar' step is provided by the SonarQube Scanner plugin
+                    // The 'withSonarQubeEnv' step uses the globally configured SonarQube server.
+                    // The 'sonarQubeUrl' parameter is not needed here as it's configured in Manage Jenkins -> System.
+                    withSonarQubeEnv(credentialsId: "${env.SONAR_AUTH_TOKEN_ID}") {
                         sh """
-                            /usr/bin/npm install -g sonarqube-scanner
+                            /usr/bin/npm install -g sonarqube-scanner # Install scanner if not already available
                             sonar-scanner \
-                                -Dsonar.projectKey=My_Vite_Application \
+                                -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
                                 -Dsonar.sources=. \
-                                -Dsonar.host.url=http://98.81.209.53:9000/ \
-                                -Dsonar.login=squ_b48c122d744a4a4114b6586799b53073f1a6d100\
+                                -Dsonar.host.url=http://<your-sonarqube-ec2-public-ip>:9000 \
+                                -Dsonar.login=${env.SONAR_AUTH_TOKEN_ID} \
                                 -Dsonar.javascript.linter.eslint.reportPaths=eslint-report.json \
                                 -Dsonar.javascript.linter.eslint.json.path=eslint-report.json
                         """
-                        // Replace <your-sonarqube-ec2-public-ip> with your actual SonarQube server IP or DNS
-                        // Make sure SonarQube token and project key are correct
-                    }
+                        // Note: For actual ESLint integration, you'd need to configure ESLint in your Vite project
+                        // and generate an eslint-report.json file before this step.
+                      
                 }
             }
         }
