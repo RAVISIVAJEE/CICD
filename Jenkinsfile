@@ -18,7 +18,7 @@ pipeline {
         // SonarQube project key (must match what you set in SonarQube)
         SONAR_PROJECT_KEY = 'My-Vite-Application'
         // SonarQube token ID from Jenkins Credentials
-        SONAR_AUTH_TOKEN_ID = 'sonarqube-token'
+        SONAR_AUTH_TOKEN_ID = credentials('sonarqube-token') // securely pulls token
         // AWS S3 bucket name
         S3_BUCKET_NAME = 'my-vite-app-cicd-demo-2025' // Replace with your S3 bucket name
         // AWS region for S3
@@ -88,6 +88,7 @@ pipeline {
                     withSonarQubeEnv('SonarQube') {
                         sh """
                             npm install -g sonarqube-scanner # Install scanner if not already available
+                            npx eslint . -f json -o eslint-report.json || true
                             sonar-scanner \
                                 -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
                                 -Dsonar.sources=. \
