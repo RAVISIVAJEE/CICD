@@ -85,7 +85,7 @@ pipeline {
                     // The 'sonar' step is provided by the SonarQube Scanner plugin
                     // The 'withSonarQubeEnv' step uses the globally configured SonarQube server.
                     // The 'sonarQubeUrl' parameter is not needed here as it's configured in Manage Jenkins -> System.
-                    withSonarQubeEnv(credentialsId: "${env.SONAR_AUTH_TOKEN_ID}") {
+                    withSonarQubeEnv('SonarQube') {
                         sh """
                             npm install -g sonarqube-scanner # Install scanner if not already available
                             sonar-scanner \
