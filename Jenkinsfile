@@ -91,7 +91,7 @@ pipeline {
                             sonar-scanner \
                                 -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
                                 -Dsonar.sources=. \
-                                -Dsonar.host.url=http://<your-sonarqube-ec2-public-ip>:9000 \
+                                -Dsonar.host.url=http://98.81.209.53:9000/ \
                                 -Dsonar.login=${env.SONAR_AUTH_TOKEN_ID} \
                                 -Dsonar.javascript.linter.eslint.reportPaths=eslint-report.json \
                                 -Dsonar.javascript.linter.eslint.json.path=eslint-report.json
