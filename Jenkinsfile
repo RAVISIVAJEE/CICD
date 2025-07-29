@@ -76,7 +76,7 @@ pipeline {
                         // Note: For actual ESLint integration, you'd need to configure ESLint in your Vite project
                         // and generate an eslint-report.json file before this step.
                       
-                }
+                }}
             }
         }
 
