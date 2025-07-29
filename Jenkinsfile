@@ -54,7 +54,31 @@ pipeline {
             }
         }
 
-
+stage('SonarQube Analysis') {
+            steps {
+                script {
+                    echo 'Running SonarQube analysis...'
+                    // Use the SonarQube Scanner plugin
+                    // The 'sonar' step is provided by the SonarQube Scanner plugin
+                    // The 'withSonarQubeEnv' step uses the globally configured SonarQube server.
+                    // The 'sonarQubeUrl' parameter is not needed here as it's configured in Manage Jenkins -> System.
+                    withSonarQubeEnv(credentialsId: "${env.SONAR_AUTH_TOKEN_ID}") {
+                        sh """
+                            /usr/bin/npm install -g sonarqube-scanner # Install scanner if not already available
+                            sonar-scanner \
+                                -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=http://<your-sonarqube-ec2-public-ip>:9000 \
+                                -Dsonar.login=${env.SONAR_AUTH_TOKEN_ID} \
+                                -Dsonar.javascript.linter.eslint.reportPaths=eslint-report.json \
+                                -Dsonar.javascript.linter.eslint.json.path=eslint-report.json
+                        """
+                        // Note: For actual ESLint integration, you'd need to configure ESLint in your Vite project
+                        // and generate an eslint-report.json file before this step.
+                        // For simplicity in this demo, it might just run basic analysis.
+                    }
+                }
+            }
         stage('Archive Artifacts') {
             steps {
                 script {
